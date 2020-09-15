@@ -1,4 +1,6 @@
-# Project Description
+# Improving OpenVSLAM efficiency
+
+## Project Description
 
 This project aims to investigate viable methods for improving the efficiency of the OpenVSLAM project, by methods as reducing the FPS of the videos, their resolution or cropping them to reduce its size. By this work is expected to figure out the methods which provide the best tradeoff between mapping quality and computational cost, in order to apply the algorithm on embedded applications. 
 
@@ -8,7 +10,7 @@ By now, most of the code is about automated tests with the algorithm, running on
 
 The installation steps can be found on the [OpenVSLAM project repo:](https://github.com/xdspacelab/openvslam)
 
-All the code is being develooped on Ubuntu 18.04 LTS.
+All the code is being developed on Ubuntu 18.04 LTS.
 
 ## Usage
 
