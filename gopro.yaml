@@ -1,0 +1,66 @@
+#YAML DA GOPRO
+# LUMIX fisheye model for 1K setting
+
+#==============#
+# Camera Model #
+#==============#
+
+Camera.name: "GoPRO Camera"
+Camera.setup: "monocular"
+Camera.model: "perspective"
+
+#Intrinsic Matrix:
+#[[848.062867     0.         954.26158215]
+# [  0.         849.37452936 542.74045514]
+# [  0.           0.           1.        ]]
+
+
+Camera.fx: 848.062867
+Camera.fy: 849.37452936
+Camera.cx: 954.26158215
+Camera.cy: 542.74045514
+
+Camera.k1: -0.27124033
+Camera.k2: 0.10898775
+Camera.p1: -0.00262032
+Camera.p2: -0.00041109
+Camera.k3: -0.02499357
+#Distortion vector [[-0.27124033  0.10898775 -0.00262032 -0.00041109 -0.02499357]]
+
+Camera.fps: 120.0
+Camera.cols: 1920
+Camera.rows: 1080
+
+Camera.color_order: "RGB"
+
+#================#
+# ORB Parameters #
+#================#
+
+Feature.max_num_keypoints: 4000
+Feature.scale_factor: 1.2 
+Feature.num_levels: 8
+Feature.ini_fast_threshold: 9
+Feature.min_fast_threshold: 2
+
+
+#=====================#
+# Tracking Parameters #
+#=====================#
+
+depth_threshold: 50
+ 	
+#===========================#
+# PangolinViewer Parameters #
+#===========================#
+
+PangolinViewer.keyframe_size: 0.07
+PangolinViewer.keyframe_line_width: 1
+PangolinViewer.graph_line_width: 1
+PangolinViewer.point_size: 2
+PangolinViewer.camera_size: 0.08
+PangolinViewer.camera_line_width: 3
+PangolinViewer.viewpoint_x: 0
+PangolinViewer.viewpoint_y: -0.65
+PangolinViewer.viewpoint_z: -1.9
+PangolinViewer.viewpoint_f: 400
