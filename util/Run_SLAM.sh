@@ -27,8 +27,8 @@ cd /home/paulo/catkin_ws/openvslam-branch/build
 
 # ./run_video_localization \
 # 	-v ./orb_vocab/orb_vocab.dbow2 \
-#     -c ./aist_living_lab_1/config.yaml \
-#     -m ./aist_living_lab_1/video.mp4 \
+#     -c ./aist_living_lab_1_m/config.yaml \
+#     -m ./aist_living_lab_1_m/video.mp4 \
 #     --frame-skip 3 \
 #     --map-db ./aist_living_lab_1_m/fisheye_map.msg
 # #--maping allows extend the prebuild map!!
@@ -59,30 +59,16 @@ cd /home/paulo/catkin_ws/openvslam-branch/build
 
 ###    Rodando a GoPro    ###############################
 
-#cd /home/paulo/OpenVSLAM/openvslam/build   
-./run_video_slam \
-    -v ./orb_vocab/orb_vocab.dbow2 \
-    -c ./testes/gopro.yaml \
-    -m ./testes/direita_trim.MP4 \
-    --no-sleep \
-    --auto-term \
-    --map-db ./testes/mapa_direita_trim.msg
-
+# cd /home/paulo/OpenVSLAM/openvslam/build   
 # ./run_video_slam \
 #     -v ./orb_vocab/orb_vocab.dbow2 \
 #     -c ./testes/gopro.yaml \
-#     -m ./testes/esquerda_trim_3.MP4 \
-#     --no-sleep \
-#     --auto-term \
-#     --map-db ./testes/mapa_esquerda_trim_3.MP4 \
-
-# rosrun openvslam run_localization \
-#     -v ./orb_vocab/orb_vocab.dbow2 \
-#     -c ./testes/gopro.yaml \
+#     -m ./testes/direita.MP4 \
 #     --frame-skip 3 \
 #     --no-sleep \
 #     --auto-term \
-#     --map-db ./map5.msg
+#     --map-db ./mapa_direita.msg
+
 
 
 
@@ -98,14 +84,16 @@ cd /home/paulo/catkin_ws/openvslam-branch/build
 
 #--maping  #allows extend the prebuild map!!
 
-rosrun openvslam run_slam \
-    -v ./orb_vocab/orb_vocab.dbow2 \
-    -c ./testes/gopro.yaml \
-    --frame-skip 5 \
-    --no-sleep \
-    --auto-term \
-    --map-db ./testes/mapa_direita_trim_trial.msg
-   #auto camera_pose=map_publisher_->get_current_cam_pose().inverse().eval();
+
+
+# rosrun openvslam run_localization \
+#     -v ./orb_vocab/orb_vocab.dbow2 \
+#     -c ./testes/gopro.yaml \
+#     --frame-skip 3 \
+#     --no-sleep \
+#     --auto-term \
+#     --map-db ./map5.msg
+#    auto camera_pose=map_publisher_->get_current_cam_pose().inverse().eval();
 
 # rosrun openvslam run_localization \
 #    -v ./orb_vocab/orb_vocab.dbow2 \
@@ -234,14 +222,14 @@ rosrun openvslam run_slam \
 
 
 
-# ./run_video_localization \
-# 	-v ./orb_vocab/orb_vocab.dbow2 \
-# 	-c ./testes/gopro.yaml \
-# 	-m ./testes/direita.MP4 \
-# 	--frame-skip 3 \
-# 	--no-sleep \
-# 	--auto-term \
-# 	--map-db ./testes/mapa_teste.msg
+./run_video_slam \
+	-v ./orb_vocab/orb_vocab.dbow2 \
+	-c ./testes/gopro.yaml \
+	-m ./testes/direita_trim.MP4 \
+	--frame-skip 3 \
+	--no-sleep \
+	--auto-term \
+	--map-db ./testes/mapa_teste.msg
 
 
 
@@ -256,10 +244,4 @@ rosrun openvslam run_slam \
 #     --map-db ./mapa_ros.msg
 
 
-rosrun openvslam run_slam \
-    -v ./orb_vocab/orb_vocab.dbow2 \
-    -c ./aist_living_lab_1/config.yaml \
-    --frame-skip 3 \
-    --no-sleep \
-    --auto-term \
-    --map-db ./mapa_ros.msg
+#     # 
