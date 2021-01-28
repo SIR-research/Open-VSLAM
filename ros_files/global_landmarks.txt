@@ -1,0 +1,26 @@
+//arquivo system.cc
+#include publish/map_publisher.h
+#include publish/frame_publisher.h
+
+// Em feed_monocular_frame (?)
+
+std::vector<data::landmark*> landmarks;
+std::set<data::landmark*> local_landmarks;
+
+map_publisher_->get_landmarks(landmarks, local_landmarks);
+
+if (landmarks.empty()) {
+return;
+}
+
+for (const auto lm : landmarks) {
+if (!lm || lm->will_be_erased()) {
+continue;
+}
+if (*menu_show_local_map_ && local_landmarks.count(lm)) {
+continue;
+}
+const openvslam::Vec3_t pos_w = lm->get_pos_in_world();
+}
+
+/home/paulo/openvslam/openvslam/build
