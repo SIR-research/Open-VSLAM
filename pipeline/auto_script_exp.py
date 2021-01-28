@@ -3,7 +3,7 @@ import sys
 import subprocess
 import glob
 import time
-import signal
+#import signal
 
 # **** Group subprocess function
 def show_setting_prgrp():
@@ -12,21 +12,30 @@ def show_setting_prgrp():
     print('Process group is now {}'.format(os.getpgrp()))
     sys.stdout.flush()
 
+# ***** Choose between the slam and localization task *****
+slam  = True
+
+if slam: 
+    task  = 'slam' 
+else:
+    task = 'localization'    
+
 # ***** Choose between the real data and debugging data *****
 debugging  = True # If true, uses the same structure of the real, but with debugging data
 
-
 if debugging:
     test = 'unit-test'
-    frameskip_list = [0,3]
+    frameskip_list = [0, 3]
+    resolution_list = [720,1080] 
 else: 
     frameskip_list = [0, 1, 2, 3, 4, 5, 6]  # The objetive experiment
     test = 'testes'
-resolution_list = [320,480,720,1080] 
+    resolution_list = [320,480,720,1080] 
 
 # **** Changing path to working dir and getting the video names ****
 base_path = '/home/paulo/openvslam/openvslam/build/'
 video_names = glob.glob(base_path+'/{}/videos/*.MP4'.format(test)) # Get video names list
+mask_list = glob.glob(base_path+'/unit-test/masks/*.png')
 
 # **** Calling roscore and image transport ****
 subprocess.call(['gnome-terminal','--','roscore']) 
@@ -37,34 +46,43 @@ time.sleep(1)
 
 # **** Running openvslam in a loop ****
 for video in video_names: 
+
+    # Filter valid masks
+    resolution = video.split('-')[2]
+    mask_valid = []    
+    mask_names = []
     for mask in mask_list:
+        mask_name = mask.split('/')[-1]
+        if(mask_name.startswith('mask{}'.format(resolution))):
+            mask_valid.append(mask) # to feed OpenVSLAM system
+            
+    for mask in mask_valid:
         for frameskip in frameskip_list:
-            video_path = base_path+'/aist_living_lab_1/video.mp4' #TODO: Deixar os videos dinamicamente 
-            resolution = video_names.split('-')[2]
-            # The resolution is encoded at the 3° argument of video names: eg: left-FPS-RESOLUTION-MASK
-            mask_list = glob.glob(base_path+'/{}/masks/*mask{}'.format(test,resolution))
-            #Use only the masks that match the resolution
+            # **** Configure the map name to save data ****
+            # The resolution is encoded at the 3° argument of video names,like: name-FPS-RESOLUTION-MASK
+            fps =  int(120/(1+frameskip))
+            mask_size = (((mask.rsplit( ".", 1 )[ 0 ]).split('/')[-1]).split('-')[-1])
+            file_name = ((video.rsplit( ".", 1 )[ 0 ]).split('/')[-1]).split('-')[0]
+            map_name = [file_name,str(fps),str(resolution),str(mask_size)]
+            map_name = ('-').join(map_name)
+            
 
             # Call video publisher node
             subprocess.call(['gnome-terminal','--', 'rosrun','publisher','video',
-            '-m','{}'.format(video_path)])
-
+            '-m','{}'.format(video)])
 
             time.sleep(5)
             #Call ROS Odometry to .pkl node 
             subprocess.call(['gnome-terminal','--','rosrun','openvslam','cam_pose2pkl.py',
-            video.rsplit( ".", 1 )[ 0 ]
-            ]) # the last arg takes off the file ext. to change it to .pkl
-            # TODO: Interface the .pkl name as input as well, equal to the map name
+            map_name
+            ])# The .pkl file will be saved with the same name as the map.
             
-            #OpenVSLAM file paths 
+            #OpenVSLAM file paths             
             vocab_path  = base_path+'/orb_vocab/orb_vocab.dbow2'
-            config_path = base_path+'testes/videos/gopro.yaml'  #TODO: Change the path to gopro
-            map_path    = base_path+'/{}/{}.msg'.format{test, map_name} #TODO: Change the path dynamically
+            config_path = base_path+'testes/videos/gopro.yaml'
+            map_path    = base_path+'/{}/maps/{}.msg'.format(test, map_name) 
             # The map will be saved into another folder, just like the db
 
-            # db-filename = 
-            # # TODO: Change 'filename' to the video names
             # c = subprocess.Popen(['rosrun openvslam node-python.py -filename'], \
             # shell=True, preexec_fn= os.setsid)
 
@@ -76,12 +94,23 @@ for video in video_names:
                 '--no-sleep',
                 '--auto-term'
                 ])
+            
+            p = subprocess.Popen(['rosrun','openvslam','cam_pose2pkl.py',
+             'teste_sigint'
+             ], preexec_fn= os.setsid)
+            pid = p.pid
+            
+            SLAM_FINISHED =True
 
-            print("SLAM process has finished for {}".format(video))
+            if(SLAM_FINISHED):
+                kill_process =  subprocess.Popen(['kill', '{}'.format(pid)])
+                kill_process.terminate()
+
+            print("{} process has finished for {}.MP4".format(task,map_name))
 
             # Kill the nodes and go to next iteration
-            time.sleep(15)
-            os.killpg(os.getpgid(c.pid), signal.SIGTERM)  # Send the signal to all the process groups
+            time.sleep(10)
+#            os.killpg(os.getpgid(c.pid), signal.SIGTERM)  # Send the signal to all the process groups
 
 #run the slam system until it reaches a predefined state
 
