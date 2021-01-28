@@ -47,7 +47,8 @@ mask_list = glob.glob(base_path+'/unit-test/masks/*.png')
 subprocess.call(['gnome-terminal', '--', 'roscore'])
 time.sleep(10)
 subprocess.call(['gnome-terminal', '--', 'rosrun', 'image_transport',
-                 'republish', 'raw', 'in:=/video/image_raw', 'raw', 'out:=/camera/image_raw'])
+                 'republish', 'raw', 'in:=/video/image_raw', 'raw',
+                 'out:=/camera/image_raw'])
 time.sleep(1)
 
 # **** Running openvslam in a loop ****
@@ -57,6 +58,7 @@ for video in video_names:
     resolution = video.split('-')[2]
     mask_valid = []
     mask_names = []
+
     for mask in mask_list:
         mask_name = mask.split('/')[-1]
         if(mask_name.startswith('mask{}'.format(resolution))):
@@ -65,7 +67,8 @@ for video in video_names:
     for mask in mask_valid:
         for frameskip in frameskip_list:
             # **** Configure the map name to save data ****
-            # The resolution is encoded at the 3° argument of video names,like: name-FPS-RESOLUTION-MASK
+            # The resolution is encoded at the 3° argument of video names
+            # Name structure encoding: name-FPS-RESOLUTION-MASK
             fps = int(120/(1+frameskip))
             mask_size = (
                 ((mask.rsplit(".", 1)[0]).split('/')[-1]).split('-')[-1])
@@ -81,7 +84,8 @@ for video in video_names:
 
             time.sleep(5)
             # Call ROS Odometry to .pkl node
-            subprocess.call(['gnome-terminal', '--', 'rosrun', 'openvslam', 'cam_pose2pkl.py',
+            subprocess.call(['gnome-terminal', '--', 'rosrun', 'openvslam',
+                             'cam_pose2pkl.py',
                              map_name
                              ])
             # The .pkl file will be saved with the same name as the map.
@@ -92,10 +96,12 @@ for video in video_names:
             map_path = base_path+'/{}/maps/{}.msg'.format(test, map_name)
             # The map will be saved into another folder, just like the db
 
-            # c = subprocess.Popen(['rosrun openvslam node-python.py -filename'], \
+            # c = subprocess.Popen(['rosrun openvslam node-python.py
+            #  -filename'], \
             # shell=True, preexec_fn= os.setsid)
 
-            subprocess.call(['gnome-terminal', '--', 'rosrun', 'openvslam', 'run_slam',
+            subprocess.call(['gnome-terminal', '--', 'rosrun', 'openvslam',
+                             'run_slam',
                              '-v', '{}'.format(vocab_path),
                              '-c', '{}'.format(config_path),
                              '--map-db', '{}'.format(map_path),
@@ -131,10 +137,12 @@ for video in video_names:
 
 # add conditions based on this stream.
 
-# save into a parsable file, like a pandas dataframe, or a dict to dump and load,
+# save into a parsable file, like a pandas dataframe,
+#  or a dict to dump and load,
 # check the idea
 # or either a csv file -> saving into a dump file
 
 
-# Reference: https://stackoverflow.com/questions/4256107/running-bash-commands-in-python
-#            https://openvslam.readthedocs.io/en/master/ros_package.html
+# Reference:
+#   https://stackoverflow.com/questions/4256107/running-bash-commands-in-python
+#   https://openvslam.readthedocs.io/en/master/ros_package.html
