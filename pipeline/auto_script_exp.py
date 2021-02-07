@@ -3,6 +3,7 @@ import sys
 import subprocess
 import glob
 import time
+from typing import List
 # import signal
 
 
@@ -24,7 +25,7 @@ else:
 
 # ***** Choose between the real data and debugging data *****
 
-# Uses the same structure of the real, but with debugging data
+# It applies the same structure of the real, but with debugging data
 debugging = True
 
 
@@ -38,10 +39,10 @@ else:
     resolution_list = [320, 480, 720, 1080]
 
 # **** Changing path to working dir and getting the video names ****
-base_path = '/home/paulo/openvslam/openvslam/build/'
+base_path = '~/openvslam/openvslam/build/'
 # Get video names list
 video_names = glob.glob(base_path+'/{}/videos/*.MP4'.format(test))
-mask_list = glob.glob(base_path+'/unit-test/masks/*.png')
+mask_list = glob.glob(base_path+'/{}/masks/*.png'.format(test))
 
 # **** Calling roscore and image transport ****
 subprocess.call(['gnome-terminal', '--', 'roscore'])
@@ -56,8 +57,8 @@ for video in video_names:
 
     # Filter valid masks
     resolution = video.split('-')[2]
-    mask_valid = []
-    mask_names = []
+    mask_valid: List[str] = []
+    mask_names: List[str] = []
 
     for mask in mask_list:
         mask_name = mask.split('/')[-1]
