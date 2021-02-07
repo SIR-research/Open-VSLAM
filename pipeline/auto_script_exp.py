@@ -22,15 +22,15 @@ if slam:
     task = 'slam'
 else:
     task = 'localization'
+# TODO: Define the differences between both of the pipelines (low priority)
 
 # ***** Choose between the real data and debugging data *****
 
 # It applies the same structure of the real, but with debugging data
 debugging = True
 
-
 if debugging:
-    test = 'unit-test'
+    test = 'debug'
     frameskip_list = [0, 3]
     resolution_list = [720, 1080]
 else:
@@ -60,6 +60,7 @@ for video in video_names:
     mask_valid: List[str] = []
     mask_names: List[str] = []
 
+    # Name structure encoding: name-FPS-RESOLUTION-MASK
     for mask in mask_list:
         mask_name = mask.split('/')[-1]
         if(mask_name.startswith('mask{}'.format(resolution))):
@@ -69,7 +70,6 @@ for video in video_names:
         for frameskip in frameskip_list:
             # **** Configure the map name to save data ****
             # The resolution is encoded at the 3° argument of video names
-            # Name structure encoding: name-FPS-RESOLUTION-MASK
             fps = int(120/(1+frameskip))
             mask_size = (
                 ((mask.rsplit(".", 1)[0]).split('/')[-1]).split('-')[-1])
