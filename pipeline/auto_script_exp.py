@@ -30,7 +30,7 @@ else:
 debugging = True
 
 if debugging:
-    test = 'debug'
+    test = 'test-debug'
     frameskip_list = [0, 3]
     resolution_list = [720, 1080]
 else:
@@ -55,16 +55,17 @@ time.sleep(1)
 # **** Running openvslam in a loop ****
 for video in video_names:
 
+    # Name structure encoding: name-FPS-RESOLUTION-MASK
     # Filter valid masks
     resolution = video.split('-')[2]
     mask_valid: List[str] = []
     mask_names: List[str] = []
 
-    # Name structure encoding: name-FPS-RESOLUTION-MASK
     for mask in mask_list:
         mask_name = mask.split('/')[-1]
         if(mask_name.startswith('mask{}'.format(resolution))):
-            mask_valid.append(mask)  # to feed OpenVSLAM system
+            mask_valid.append(mask)
+            # Match the videos wich has the same resolution of the mask
 
     for mask in mask_valid:
         for frameskip in frameskip_list:
@@ -93,9 +94,9 @@ for video in video_names:
 
             # OpenVSLAM file paths
             vocab_path = base_path+'/orb_vocab/orb_vocab.dbow2'
-            config_path = base_path+'testes/videos/gopro.yaml'
+            config_path = base_path+'{}/videos/gopro.yaml'.format(test)
             map_path = base_path+'/{}/maps/{}.msg'.format(test, map_name)
-            # The map will be saved into another folder, just like the db
+            # The map will be saved into another folder, just like the pickle db
 
             # c = subprocess.Popen(['rosrun openvslam node-python.py
             #  -filename'], \
