@@ -1,0 +1,9 @@
+<launch>
+
+	<arg name="-m" value="/aist_living_lab_1/video.mp4" />
+	<node pkg = "publisher" type="video" name="video_publisher" args="-m" />
+
+	<arg name="raw in" value="/video/image_raw" />
+	<arg name="raw out" value="/camera/image_raw" />
+
+<!--i can stack launch files: based on #include-->

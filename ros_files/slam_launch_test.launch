@@ -1,9 +1,0 @@
-<launch>
-
-	<!-- declaration of the args to be passed -->
-	<arg name="--vocab" default="/home/paulo/catkin_ws/openvslam-branch/build/orb_vocab/orb_vocab.dbow2" />
-	<arg name="--config" default="/home/paulo/catkin_ws/openvslam-branch/build/testes/gopro.yaml" />
-	<arg name="--map-db" value="/home/paulo/catkin_ws/openvslam-branch/build/testes/mapa_launch.msg" />
-	
-	<node pkg = "openvslam" type="run_slam" name="run_slam_node" args = "$(dirname --vocab) $(dirname --config) $(dirname --map-db)" />
-</launch>

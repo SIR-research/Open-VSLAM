@@ -1,2 +1,13 @@
 cpp-extract
 __pycache__
+/SLAM_datasets
+/experiment_data/videos/*.MP4
+/experiment_data/videos/*.mp4
+/experiment_data/videos/*.mkv
+
+/experiment_data/maps/
+/experiment_data/dbs/
+
+/test_debug/videos/*.MP4
+/test_debug/maps/
+/test_debug/dbs/
