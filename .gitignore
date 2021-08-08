@@ -8,6 +8,6 @@ __pycache__
 /experiment_data/maps/
 /experiment_data/dbs/
 
-/test_debug/videos/*.MP4
-/test_debug/maps/
-/test_debug/dbs/
+/experiment_data_debug/videos/*.MP4
+/experiment_data_debug/maps/
+/experiment_data_debug/dbs/
