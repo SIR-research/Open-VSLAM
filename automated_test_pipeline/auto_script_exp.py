@@ -23,12 +23,10 @@ slam = True
 base_path = '/home/paulo/Projects/openvslam_ws/openvslam/build/'  # openvslam_path
 tests_ws_path = '/home/paulo/Projects/IC_SLAM_pipelines'
 
-# OpenVSLAM file paths
-vocab_path = base_path+'/orb_vocab/orb_vocab.dbow2'
+# '-s' / home/paulo/Projects/IC_SLAM_pipelines/experiment_data_debug/videos/direita-120-1080-teste2.MP4 \
+
 #config_path = tests_ws_path+'{}/videos/gopro.yaml'.format(test)
-config_path = tests_ws_path+'{}/videos/gopro.yaml'.format('test-debug')
 #map_path = tests_ws_path+'/{}/maps/{}.msg'.format(test, map_name)
-map_path = tests_ws_path+'/{}/maps/{}.msg'.format('test-debug', 'mapa_debug')
 
 
 # ***** Choose between the slam and localization task *****
@@ -54,41 +52,45 @@ else:
 
 # **** Changing path to working dir and getting the video names ****
 
+# OpenVSLAM file paths
+vocab_path = base_path+'/orb_vocab/orb_vocab.dbow2'
+config_path = '/home/paulo/Projects/IC_SLAM_pipelines/' + \
+    '{}/videos/gopro.yaml'.format('test-debug')
+map_path = tests_ws_path+'/{}/maps/{}.msg'.format('test-debug', 'mapa_debug')
 
 # Get video names list
 video_names = glob.glob(tests_ws_path+'/{}/videos/*.MP4'.format(test_type))
 mask_list = glob.glob(tests_ws_path+'/{}/masks/*.png'.format(test_type))
 
-# **** Calling roscore and image transport ****
-subprocess.call(['roscore', '&'], shell=True)
-time.sleep(1)
-
-subprocess.call(['rosrun', 'image_transport',
-                 'republish', 'raw', 'in:=/video/image_raw', 'raw',
-                 'out:=/camera/image_raw', '&'])
-time.sleep(1)
-
 # **** Running openvslam in a loop ****
 for video in video_names:
 
-    subprocess.Popen(['rosrun', 'publisher',
-                     'video', '-m', '{}'.format(video)])
+    # subprocess.Popen(['rosrun', 'openvslam',
+    #                  'run_slam',
+    #                   '-v', '{}'.format(vocab_path),
+    #                   '-c', '{}'.format(config_path),
+    #                   '--map-db', '{}'.format(map_path),
+    #                   '--frame-skip {}'.format('0'),
+    #                   '--no-sleep',
+    #                   '--auto-term'
+    #                   ])
 
-    print("Passei pra ca")
-    subprocess.Popen(['rosrun', 'openvslam',
-                     'run_slam',
-                      '-v', '{}'.format(vocab_path),
-                      '-c', '{}'.format(config_path),
-                      '--map-db', '{}'.format(map_path),
-                      '--frame-skip {}'.format('0'),
-                      '--no-sleep',
-                      '--auto-term'
-                      ])
+    process = subprocess.Popen(['bash', 'open_tmux.sh',
+                                '-v', '{}'.format(vocab_path),
+                                '-c', '{}'.format(config_path),
+                                '-m', '{}'.format(map_path),
+                                '-s', '{}'.format(video),
+                                '-k', '{}'.format('unknown'),
+                                '-f', '{}'.format('1'),
+                                ' &', 'BACK_PID=$!'
+                                ])
+
+    # process2 = subprocess.Popen(['wait', '$BACK_PID'])
+    process.wait()
 
     # p = subprocess.Popen(['rosrun', 'openvslam', 'cam_pose2pkl.py',
     #                         'teste_sigint'
     #                         ], preexec_fn=os.setsid)
-    time.sleep(10)
     # SLAM_FINISHED = True
 
 # if(SLAM_FINISHED):
