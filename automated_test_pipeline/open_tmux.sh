@@ -39,7 +39,7 @@ echo "frameskip : $frameskip";
 echo "mask path : $mask_path";
 
 # Split session into FOUR EQUAL quadrants
-#tmux new-session -s five_panes -n editor -d -c ~/code/five_panes
+# tmux new-session -s five_panes -n editor -d -c ~/code/five_panes
 
 tmux selectp -t 0   # select the first (0) pane
 tmux splitw -h -p 66 # split it into two halves
@@ -53,10 +53,10 @@ tmux splitw -v -p 50   # split it into two halves
 # tmux selectp -t 0      # select the first
 # tmux splitw -v -p 50   # split it into two halves
 
-tmux send-keys -t 0 'roscore' Enter
+tmux send-keys -t 0 'roscore ' Enter
 
 tmux selectp -t 1
-tmux send-keys "rosrun publisher video -m $video_path && tmux send-keys -t 3 C-c" Enter  
+tmux send-keys "rosrun publisher video -m $video_path && tmux send-keys -t 3 C-c && wait" Enter  
 
 # tmux send-keys 'tmux send-keys -t 3 C-c
 
@@ -73,7 +73,7 @@ tmux send-keys "rosrun openvslam run_slam  \
     --no-sleep \
     --auto-term \
     --map-db $map_path \
-    && tmux kill-pane -a" Enter
-
-tmux selectp -t 4
-tmux send-keys '&& tmux send-keys -t 3 C-c;
+    && tmux kill-pane -a; tmux wait-for -S command-finished" Enter
+tmux wait-for command-finished
+echo done
+# tmux send-keys '&& tmux send-keys -t 3 C-c'
