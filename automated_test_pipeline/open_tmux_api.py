@@ -23,8 +23,8 @@ tests_ws_path = '/home/paulo/Projects/IC_SLAM_pipelines'
 
 if debugging:
     test_type = 'experiment_data_debug'
-    frameskip_list = [0, 3]
-    resolution_list = [720, 1080]
+    frameskip_list = [0]  # [0, 3]
+    resolution_list = [730]  # [720, 1080]
 else:
     frameskip_list = [0, 1, 2, 3, 4, 5, 6]  # The objetive experiment
     test_type = 'experiment_data'
@@ -35,7 +35,7 @@ video_list = glob.glob(tests_ws_path+'/{}/videos/*.MP4'.format(test_type))
 mask_list = glob.glob(tests_ws_path+'/{}/masks/*.png'.format(test_type))
 config_path = tests_ws_path+'/{}/videos/gopro.yaml'.format(test_type)
 vocab_path = '/home/paulo/Projects/openvslam_ws/openvslam/orb_vocab/orb_vocab.dbow2'
-map_path = tests_ws_path+'/{}/maps'.format(test_type)
+map_path = tests_ws_path+'/{}/maps/'.format(test_type)
 
 print(video_list)
 print(mask_list)
@@ -55,14 +55,27 @@ for i, video_path in enumerate(video_list):
         mask_name = mask.split('/')[-1]
         if(mask_name.startswith('mask{}'.format(resolution))):
             mask_valid.append(mask)
-    print(mask_valid)
+    # print(mask_valid)
     time.sleep(2)
     # Match the videos wich has the same resolution of the mask
 
     for mask in mask_valid:
         for frameskip in frameskip_list:
+            fps = int(120/(1+frameskip))
 
-            # the tmux part
+            # PARSE Map name / Mask
+            # map_name = f'map_{direita/esquerda}-{fps}-{resolution}-{mask}'
+            # print(f"map-{(video_path.split('/')[-1]).split("-")[:-1]}")
+            map_name_args = ((video_path.split('/')[-1]).split("-")[:-1])
+            map_name_suffix = (mask.split(".")[0]).split("-")[-1]
+            map_name_args.append(map_name_suffix)
+            map_name = f"map-{'-'.join(map_name_args)}.msg"
+            db_name = f"db-{'-'.join(map_name_args)}.pkl"
+
+            print(map_name)
+            print(db_name)
+
+            # # the tmux part
             windows = []
             panes = []
             server = libtmux.Server()
@@ -86,6 +99,7 @@ for i, video_path in enumerate(video_list):
                 --auto-term \
                 --eval-log \
                 --mask {mask} \
+                --map-db {map_path+map_name} \
                 && tmux kill-session -t openvslam_tests",
                 f"rosrun publisher video -m {video_path} && tmux send-keys -t 2 C-c"
             ]
@@ -96,13 +110,3 @@ for i, video_path in enumerate(video_list):
                 time.sleep(1)
             server.attach_session("openvslam_tests")
             time.sleep(1)
-
-# Parece que varreu certinho todos os casos de teste :)
-# Falta alguma coisa????
-# ACcho que é isso mesmo
-# Ainda no modo debug
-# TODO: Remover algumas masks pra iterar mais rápido
-# TODO: Fazer o esquema do parsing da db que é salva
-# TODO: Adicionar o nó para salvar a pose
-# TODO: Verificar se salva a db direitinho
-# rename track_times/keyframe_traj/frame_trajectory
