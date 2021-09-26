@@ -7,7 +7,16 @@ __pycache__
 
 /experiment_data/maps/
 /experiment_data/dbs/
+/experiment_data/bags/
+/experiment_data/bags_filtered/
+/experiment_data/logs/
+experiment_data.back
+
 
 /experiment_data_debug/videos/*.MP4
 /experiment_data_debug/maps/
 /experiment_data_debug/dbs/
+/experiment_data_debug/bags/
+/experiment_data_debug/bags_filtered/
+/experiment_data_debug/logs/
+
