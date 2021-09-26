@@ -9,7 +9,7 @@ import time
 from typing import List
 
 # TODO: replace by arg-parse
-debugging = False
+debugging = True
 slam = True
 
 # ***** Choose between the slam and localization task *****
@@ -26,9 +26,9 @@ if debugging:
     frameskip_list = [0]  # [0, 3]
     resolution_list = [720]  # [720, 1080]
 else:
-    frameskip_list = [0]  # [0, 1, 2, 3, 4, 5, 6]  # The objetive experiment
+    frameskip_list = [0, 1, 3, 7]  # [0]  # [The objetive experiment
     test_type = 'experiment_data'
-    resolution_list = [720]  # [320, 480, 720, 1080]
+    resolution_list = [320, 480, 720, 1080]  # [720]
 
 
 video_list = glob.glob(tests_ws_path+'/{}/videos/*.MP4'.format(test_type))
@@ -46,7 +46,7 @@ print(frameskip_list)
 time.sleep(1)
 
 
-for i, video_path in enumerate(video_list[:2]):
+for i, video_path in enumerate(video_list):
     # Name structure encoding: name-FPS-RESOLUTION-MASK
 
     resolution = video_path.split('-')[2]
@@ -62,7 +62,7 @@ for i, video_path in enumerate(video_list[:2]):
     time.sleep(1)
     # Match the videos wich has the same resolution of the mask
 
-    for mask in mask_valid[:1]:
+    for mask in mask_valid[0]:
         for frameskip in frameskip_list:
             fps = int(120/(1+frameskip))
 
@@ -70,8 +70,12 @@ for i, video_path in enumerate(video_list[:2]):
             # map_name = f'map_{direita/esquerda}-{fps}-{resolution}-{mask}'
             # print(f"map-{(video_path.split('/')[-1]).split("-")[:-1]}")
             map_name_args = ((video_path.split('/')[-1]).split("-")[:-1])
+            print(map_name_args)
             map_name_suffix = (mask.split(".")[0]).split("-")[-1]
-            map_name_args.append(map_name_suffix)
+            # print(map_name_suffix)
+            # map_name_args.append(map_name_suffix)
+            map_name_args = [
+                map_name_args[0], str(fps), map_name_args[2], map_name_suffix]
             map_name = f"map-{'-'.join(map_name_args)}.msg"
             # --- replace by a rosbag hehe
             bag_name = f"bag-{'-'.join(map_name_args)}-{task}.bag"
